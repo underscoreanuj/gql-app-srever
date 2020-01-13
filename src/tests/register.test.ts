@@ -1,10 +1,14 @@
 import {request} from "graphql-request";
-import {host} from "./constants";
 import {User} from "../entity/User";
-import {createTypeORMConn} from "../utils/CreateTypeORMConn";
+import {startServer} from "../startServer";
+import {AddressInfo} from "net";
+
+let getHost = () => "";
 
 beforeAll(async () => {
-  await createTypeORMConn();
+  const app = await startServer();
+  const {port} = app.address()as AddressInfo;
+  getHost = () => `http://127.0.0.1:${port}`;
 });
 
 const email = "test@testing.com";
@@ -17,7 +21,7 @@ mutation {
 `;
 
 test("Register user", async () => {
-  const response = await request(host, mutation);
+  const response = await request(getHost(), mutation);
   expect(response).toEqual({register: true});
   const users = await User.find({where: {
       email
