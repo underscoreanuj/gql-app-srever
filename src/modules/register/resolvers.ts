@@ -4,6 +4,7 @@ import {User} from "../../entity/User";
 import * as yup from "yup";
 import {formatYupError} from "../../utils/formatYupError";
 import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
+import {createConfirmEmailLink} from "../../utils/createConfirmEmailLink";
 
 const schema = yup.object().shape({
   email: yup.string().min(7, emailNotLongEnough).max(255).email(invalidEmail),
@@ -15,7 +16,7 @@ export const resolvers: ResolverMap = {
     bye: () => "bye"
   },
   Mutation: {
-    register: async (_, args : GQL.IRegisterOnMutationArguments) => {
+    register: async (_, args : GQL.IRegisterOnMutationArguments, {redis, url}) => {
       try {
         await schema.validate(args, {abortEarly: false});
       } catch (err) {
@@ -39,6 +40,8 @@ export const resolvers: ResolverMap = {
       const new_user = User.create({email, password: hashedPassword});
 
       await new_user.save();
+
+      await createConfirmEmailLink(url, new_user.id, redis);
 
       return null;
     }

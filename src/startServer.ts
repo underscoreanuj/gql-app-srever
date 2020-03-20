@@ -5,6 +5,8 @@ import {createTypeORMConn} from "./utils/CreateTypeORMConn";
 import * as fs from "fs";
 import {mergeSchemas, makeExecutableSchema} from "graphql-tools";
 import {GraphQLSchema} from "graphql";
+import * as Redis from "ioredis";
+import {User} from "./entity/User";
 
 export const startServer = async () => {
   const schemas: GraphQLSchema[] = [];
@@ -17,8 +19,28 @@ export const startServer = async () => {
     schemas.push(makeExecutableSchema({resolvers, typeDefs}));
   });
 
+  const redis = new Redis();
+
   const server = new GraphQLServer({
-    schema: mergeSchemas({schemas})
+    schema: mergeSchemas({schemas}),
+    context: ({request}) => ({
+      redis,
+      url: request.protocol + "://" + request.get("host")
+    })
+  });
+
+  server.express.get("/confirm/:id", async (req, res) => {
+    const {id} = req.params;
+    const userId = await redis.get(id);
+    if (userId) {
+      await User.update({
+        id: userId
+      }, {confirmed: true});
+
+      res.send("ok, confirmed!");
+    } else {
+      res.send("invalid confirmation request");
+    }
   });
 
   await createTypeORMConn();
