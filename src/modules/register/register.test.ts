@@ -1,6 +1,7 @@
 import {request} from "graphql-request";
 import {User} from "../../entity/User";
 import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
+import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
 
 const email = "test@gmail.com";
 const pass = "testing_password";
@@ -14,7 +15,11 @@ mutation {
 }
 `;
 
-describe("Register user tests:", async () => {
+beforeAll(async () => {
+  await createTypeORMConn();
+});
+
+describe("Register user tests:", () => {
   it("add a newuser & check for duplicate emails", async () => {
     // ensure adding a new user is successfull
     const response = await request(process.env.TEST_HOST as string, mutation(email, pass));
