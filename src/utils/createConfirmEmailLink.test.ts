@@ -11,7 +11,7 @@ let redis = new Redis();
 
 beforeAll(async () => {
   await createTypeORMConn();
-  const user = await User.create({email: "test@gmail.com", password: "123!@#test__pasword"}).save();
+  const user = await User.create({email: "testemail@gmail.com", password: "123!@#test__pasword"}).save();
   userId = user.id;
 });
 
@@ -21,7 +21,7 @@ describe("Confirmation Link tests:", () => {
 
     const response = await fetch(url);
     const text = await response.text();
-    // console.log(text);
+    console.log(text);
 
     expect(text).toEqual(EMAIL_CONFIRMED);
 
