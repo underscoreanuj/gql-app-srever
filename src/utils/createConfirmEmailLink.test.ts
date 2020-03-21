@@ -11,7 +11,7 @@ let redis = new Redis();
 
 beforeAll(async () => {
   await createTypeORMConn();
-  const user = await User.create({email: "testemail@gmail.com", password: "123!@#test__pasword"}).save();
+  const user = await User.create({email: "test007@gmail.com", password: "123!@#test__pasword"}).save();
   userId = user.id;
 });
 

@@ -3,7 +3,7 @@ import {User} from "../../entity/User";
 import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
 import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
 
-const email = "test@gmail.com";
+const email = "test009@gmail.com";
 const pass = "testing_password";
 
 const mutation = (e : string, p : string) => `
@@ -24,9 +24,11 @@ describe("Register user tests:", () => {
     // ensure adding a new user is successfull
     const response = await request(process.env.TEST_HOST as string, mutation(email, pass));
     expect(response).toEqual({register: null});
-    const users = await User.find({where: {
-        email
-      }});
+    const users = await User.find({
+      where: {
+        email: email
+      }
+    });
     expect(users).toHaveLength(1);
     const user = users[0];
     expect(user.email).toEqual(email);

@@ -23,9 +23,12 @@ export const resolvers: ResolverMap = {
         return formatYupError(err);
       }
       const {email, password} = args;
-      const userAlreadyExists = await User.findOne({where: {
-          email
-        }, select: ["id"]});
+      const userAlreadyExists = await User.findOne({
+        where: {
+          email: email
+        },
+        select: ["id"]
+      });
 
       if (userAlreadyExists) {
         return [
