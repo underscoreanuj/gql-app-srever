@@ -7,8 +7,6 @@ import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough}
 import {createConfirmEmailLink} from "../../utils/createConfirmEmailLink";
 import {sendEmail} from "../../utils/sendEmail";
 
-import {v4} from "uuid";
-
 const schema = yup.object().shape({
   email: yup.string().min(7, emailNotLongEnough).max(255).email(invalidEmail),
   password: yup.string().min(6, passwordNotLongEnough).max(255)
@@ -43,7 +41,7 @@ export const resolvers: ResolverMap = {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const new_user = User.create({id: v4(), email: email, password: hashedPassword});
+      const new_user = User.create({email: email, password: hashedPassword});
 
       await new_user.save();
 
