@@ -21,7 +21,7 @@ describe("Confirmation Link tests:", () => {
 
     const response = await fetch(url);
     const text = await response.text();
-    console.log(text);
+    // console.log(text);
 
     expect(text).toEqual(EMAIL_CONFIRMED);
 
