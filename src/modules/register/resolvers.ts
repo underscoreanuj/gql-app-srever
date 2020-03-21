@@ -5,6 +5,9 @@ import * as yup from "yup";
 import {formatYupError} from "../../utils/formatYupError";
 import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
 import {createConfirmEmailLink} from "../../utils/createConfirmEmailLink";
+import {sendEmail} from "../../utils/sendEmail";
+
+import {v4} from "uuid";
 
 const schema = yup.object().shape({
   email: yup.string().min(7, emailNotLongEnough).max(255).email(invalidEmail),
@@ -40,11 +43,15 @@ export const resolvers: ResolverMap = {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const new_user = User.create({email, password: hashedPassword});
+      const new_user = User.create({id: v4(), email: email, password: hashedPassword});
 
       await new_user.save();
 
-      await createConfirmEmailLink(url, new_user.id, redis);
+      if (process.env.NODE_ENV !== "test") {
+        await sendEmail(email, await createConfirmEmailLink(url, new_user.id, redis));
+      } else {
+        await createConfirmEmailLink(url, new_user.id, redis);
+      }
 
       return null;
     }
