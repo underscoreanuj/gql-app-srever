@@ -2,6 +2,7 @@ import {request} from "graphql-request";
 import {User} from "../../entity/User";
 import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
 import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
+import {Connection} from "typeorm";
 
 const email = "test009@gmail.com";
 const pass = "testing_password";
@@ -15,8 +16,14 @@ mutation {
 }
 `;
 
+let conn: Connection;
+
 beforeAll(async () => {
-  await createTypeORMConn();
+  conn = await createTypeORMConn();
+});
+
+afterAll(async () => {
+  conn.close();
 });
 
 describe("Register user tests:", () => {

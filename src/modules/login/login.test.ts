@@ -2,6 +2,7 @@ import {request} from "graphql-request";
 import {invalidLoginInfo, confirmEmailError} from "./errorMessages";
 import {User} from "../../entity/User";
 import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
+import {Connection} from "typeorm";
 
 const email = "logintest009@gmail.com";
 const pass = "testing_password";
@@ -24,8 +25,13 @@ mutation {
 }
 `;
 
+let conn: Connection;
 beforeAll(async () => {
-  await createTypeORMConn();
+  conn = await createTypeORMConn();
+});
+
+afterAll(async () => {
+  conn.close();
 });
 
 const login = async (e : string, p : string, errMsg : string) => {

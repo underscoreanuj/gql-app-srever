@@ -33,7 +33,9 @@ export const startServer = async () => {
 
   const cors = {
     credentials: true,
-    origin: "http://localhost:3000"
+    origin: process.env.NODE_ENV === "test"
+      ? "*"
+      : (process.env.FRONTEND_HOST as string)
   };
 
   server.express.get("/confirm/:id", confirmEmail);

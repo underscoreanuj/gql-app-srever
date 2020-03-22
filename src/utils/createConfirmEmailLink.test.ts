@@ -5,14 +5,21 @@ import {createConfirmEmailLink} from "./createConfirmEmailLink";
 import {createTypeORMConn} from "./CreateTypeORMConn";
 import {User} from "../entity/User";
 import {EMAIL_CONFIRMED} from "../messages";
+import {Connection} from "typeorm";
 
 let userId = "";
 let redis = new Redis();
 
+let conn: Connection;
+
 beforeAll(async () => {
-  await createTypeORMConn();
+  conn = await createTypeORMConn();
   const user = await User.create({email: "test007@gmail.com", password: "123!@#test__pasword"}).save();
   userId = user.id;
+});
+
+afterAll(async () => {
+  conn.close();
 });
 
 describe("Confirmation Link tests:", () => {

@@ -1,11 +1,11 @@
-import * as bcrypt from "bcryptjs";
-import {ResolverMap} from "../../types/gql-utils";
-import {User} from "../../entity/User";
 import * as yup from "yup";
-import {formatYupError} from "../../utils/formatYupError";
-import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
+
+import {User} from "../../entity/User";
+import {ResolverMap} from "../../types/gql-utils";
 import {createConfirmEmailLink} from "../../utils/createConfirmEmailLink";
+import {formatYupError} from "../../utils/formatYupError";
 import {sendEmail} from "../../utils/sendEmail";
+import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
 
 const schema = yup.object().shape({
   email: yup.string().min(7, emailNotLongEnough).max(255).email(invalidEmail),
@@ -40,8 +40,9 @@ export const resolvers: ResolverMap = {
         ];
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const new_user = User.create({email: email, password: hashedPassword});
+      // const hashedPassword = await bcrypt.hash(password, 10);
+      // const new_user = User.create({email: email, password: hashedPassword});
+      const new_user = User.create({email: email, password: password});
 
       await new_user.save();
 
