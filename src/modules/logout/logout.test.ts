@@ -11,7 +11,7 @@ const cookieJar = new tough.CookieJar();
 
 let conn: Connection;
 let userId: String;
-const email = "middlewaretest@gmail.com";
+const email = "logouttest@gmail.com";
 const pass = "test_pass_123123";
 
 const loginMutation = (e : string, p : string) => `
@@ -20,6 +20,12 @@ mutation {
       path
       message
     }
+}
+`;
+
+const logoutMutation = `
+mutation {
+  logout
 }
 `;
 
@@ -41,13 +47,8 @@ afterAll(async () => {
   conn.close();
 });
 
-describe("Middleware tests:", () => {
-  it("return null if no cookie", async () => {
-    const response = await axios.post(process.env.TEST_HOST as string, {query: test_query});
-    expect(response.data.data.middleware).toBeNull();
-  });
-
-  it("get current user", async () => {
+describe("Logout tests:", () => {
+  it("logging out works", async () => {
     await axios.post(process.env.TEST_HOST as string, {
       query: loginMutation(email, pass)
     }, {
@@ -55,18 +56,33 @@ describe("Middleware tests:", () => {
       withCredentials: true
     });
 
-    const response = await axios.post(process.env.TEST_HOST as string, {
+    const response_post_login = await axios.post(process.env.TEST_HOST as string, {
       query: test_query
     }, {
       jar: cookieJar,
       withCredentials: true
     });
 
-    expect(response.data.data).toEqual({
+    expect(response_post_login.data.data).toEqual({
       middleware: {
         id: userId,
         email: email
       }
     });
+
+    await axios.post(process.env.TEST_HOST as string, {
+      query: logoutMutation
+    }, {
+      jar: cookieJar,
+      withCredentials: true
+    });
+
+    const response_post_logout = await axios.post(process.env.TEST_HOST as string, {
+      query: test_query
+    }, {
+      jar: cookieJar,
+      withCredentials: true
+    });
+    expect(response_post_logout.data.data.middleware).toBeNull();
   });
 });

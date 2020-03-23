@@ -1,7 +1,8 @@
 import * as bcrypt from "bcryptjs";
-import {ResolverMap} from "../../types/gql-utils";
+
 import {User} from "../../entity/User";
-import {invalidLoginInfo, confirmEmailError} from "./errorMessages";
+import {ResolverMap} from "../../types/gql-utils";
+import {confirmEmailError, invalidLoginInfo} from "./errorMessages";
 
 const errorResponse = [
   {

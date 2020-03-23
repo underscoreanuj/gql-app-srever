@@ -1,8 +1,9 @@
 import {request} from "graphql-request";
-import {User} from "../../entity/User";
-import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
-import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
 import {Connection} from "typeorm";
+
+import {User} from "../../entity/User";
+import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
+import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
 
 const email = "test009@gmail.com";
 const pass = "testing_password";

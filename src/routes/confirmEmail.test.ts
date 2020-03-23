@@ -1,5 +1,6 @@
-import {INVALID_CONFIRMATION} from "../messages";
 import fetch from "node-fetch";
+
+import {INVALID_CONFIRMATION} from "../messages";
 
 describe("Link confirmation route check:", () => {
   it("sends invalid link message if bad ID is sent", async () => {

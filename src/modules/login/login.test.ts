@@ -1,8 +1,9 @@
 import {request} from "graphql-request";
-import {invalidLoginInfo, confirmEmailError} from "./errorMessages";
+import {Connection} from "typeorm";
+
 import {User} from "../../entity/User";
 import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
-import {Connection} from "typeorm";
+import {confirmEmailError, invalidLoginInfo} from "./errorMessages";
 
 const email = "logintest009@gmail.com";
 const pass = "testing_password";
