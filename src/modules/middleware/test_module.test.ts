@@ -1,8 +1,13 @@
 import axios from "axios";
+import axiosCookieJarSupport from "axios-cookiejar-support";
+import * as tough from "tough-cookie";
 import {Connection} from "typeorm";
-import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
+
 import {User} from "../../entity/User";
-import request from "graphql-request";
+import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
+
+axiosCookieJarSupport(axios);
+const cookieJar = new tough.CookieJar();
 
 let conn: Connection;
 let userId: String;
@@ -37,33 +42,31 @@ afterAll(async () => {
 });
 
 describe("Middleware tests:", () => {
-  //   it("cannot get user if not logged-in", async () => {
-  //      pass
-  //   });
+  it("return null if no cookie", async () => {
+    const response = await axios.post(process.env.TEST_HOST as string, {query: test_query});
+    expect(response.data.data.middleware).toBeNull();
+  });
 
   it("get current user", async () => {
-    const tt = await axios.post(process.env.TEST_HOST as string, {
+    await axios.post(process.env.TEST_HOST as string, {
       query: loginMutation(email, pass)
-    }, {withCredentials: true});
-
-    console.log(tt.data.data);
-
-    const res = await request(process.env.TEST_HOST as string, test_query);
-
-    console.log(res);
-    console.log(userId);
+    }, {
+      jar: cookieJar,
+      withCredentials: true
+    });
 
     const response = await axios.post(process.env.TEST_HOST as string, {
       query: test_query
-    }, {withCredentials: true});
+    }, {
+      jar: cookieJar,
+      withCredentials: true
+    });
 
-    console.log(response.data.data);
-    // console.log(userId);
-    // expect(response.data.data).toEqual({
-    //   midd: {
-    //     id: userId,
-    //     email: email
-    //   }
-    // });
+    expect(response.data.data).toEqual({
+      middleware: {
+        id: userId,
+        email: email
+      }
+    });
   });
 });

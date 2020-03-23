@@ -23,8 +23,8 @@ column: number;
 interface IQuery {
 __typename: "Query";
 bye_login: string | null;
+middleware: IUser | null;
 bye: string | null;
-midd: IUser | null;
 hello: string;
 }
 

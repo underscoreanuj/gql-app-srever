@@ -1,9 +1,13 @@
-import {GraphQLServer} from "graphql-yoga";
-import {createTypeORMConn} from "./utils/CreateTypeORMConn";
-import * as session from "express-session";
+import "dotenv/config";
+import "reflect-metadata";
+
 import * as connectRedis from "connect-redis";
+import * as session from "express-session";
+import {GraphQLServer} from "graphql-yoga";
+
 import {redis} from "./redis";
 import {confirmEmail} from "./routes/confirmEmail";
+import {createTypeORMConn} from "./utils/CreateTypeORMConn";
 import {genSchema} from "./utils/genSchema";
 
 const RedisStore = connectRedis(session);
@@ -14,7 +18,8 @@ export const startServer = async () => {
     context: ({request}) => ({
       redis,
       url: request.protocol + "://" + request.get("host"),
-      session: request.session
+      session: request.session,
+      req: request
     })
   });
 
@@ -41,6 +46,7 @@ export const startServer = async () => {
   server.express.get("/confirm/:id", confirmEmail);
 
   await createTypeORMConn();
+
   const app = await server.start({
     cors,
     port: process.env.NODE_ENV === "test"
