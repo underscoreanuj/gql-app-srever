@@ -20,7 +20,7 @@ afterAll(async () => {
 });
 
 describe("Logout tests:", () => {
-  it("logging out works", async () => {
+  it("single session logout works", async () => {
     const client = new TestClient(process.env.TEST_HOST as string);
 
     // login user
@@ -45,5 +45,23 @@ describe("Logout tests:", () => {
 
     //  expect session cookie for that user to be destroyed
     expect(response_post_logout.data.middleware).toBeNull();
+  });
+
+  it("multiple session logout works", async () => {
+    // device instance 1
+    const sess_client_1 = new TestClient(process.env.TEST_HOST as string);
+    // device instance 2
+    const sess_client_2 = new TestClient(process.env.TEST_HOST as string);
+
+    await sess_client_1.login(email, pass);
+    await sess_client_2.login(email, pass);
+
+    // both sessions point to the same user id
+    expect(await sess_client_1.middleware()).toEqual(await sess_client_2.middleware());
+
+    await sess_client_1.logout();
+
+    // both sessions point to be logged out and be null
+    expect(await sess_client_1.middleware()).toEqual(await sess_client_2.middleware());
   });
 });

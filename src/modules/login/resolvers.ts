@@ -1,5 +1,6 @@
 import * as bcrypt from "bcryptjs";
 
+import {USER_SESSION_ID_PREFIX} from "../../constants";
 import {User} from "../../entity/User";
 import {ResolverMap} from "../../types/gql-utils";
 import {confirmEmailError, invalidLoginInfo} from "./errorMessages";
@@ -16,7 +17,7 @@ export const resolvers: ResolverMap = {
     bye_login: () => "bye_login"
   },
   Mutation: {
-    login: async (_, args : GQL.ILoginOnMutationArguments, {session}) => {
+    login: async (_, args : GQL.ILoginOnMutationArguments, {redis, session, req}) => {
       const {email, password} = args;
 
       const user = await User.findOne({
@@ -46,6 +47,11 @@ export const resolvers: ResolverMap = {
 
       // successfull login
       session.userId = user.id;
+
+      if (req.sessionID) {
+        // creates an array if key is not present else pushes data to existing key
+        await redis.lpush(`${USER_SESSION_ID_PREFIX}${user.id}`, req.sessionID);
+      }
 
       return null;
     }

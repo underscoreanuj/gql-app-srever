@@ -5,6 +5,7 @@ import * as connectRedis from "connect-redis";
 import * as session from "express-session";
 import {GraphQLServer} from "graphql-yoga";
 
+import {REDIS_SESSION_PREFIX} from "./constants";
 import {redis} from "./redis";
 import {confirmEmail} from "./routes/confirmEmail";
 import {createTypeORMConn} from "./utils/CreateTypeORMConn";
@@ -24,7 +25,7 @@ export const startServer = async () => {
   });
 
   server.express.use(session({
-    store: new RedisStore({client: redis}),
+    store: new RedisStore({client: redis, prefix: REDIS_SESSION_PREFIX}),
     name: "gqlid",
     secret: process.env.SESSION_SECRET as string,
     resave: false,
