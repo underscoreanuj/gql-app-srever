@@ -1,35 +1,13 @@
-import axios from "axios";
-import axiosCookieJarSupport from "axios-cookiejar-support";
-import * as tough from "tough-cookie";
 import {Connection} from "typeorm";
 
 import {User} from "../../entity/User";
 import {createTypeORMConn} from "../../utils/CreateTypeORMConn";
-
-axiosCookieJarSupport(axios);
-const cookieJar = new tough.CookieJar();
+import {TestClient} from "../../utils/TestClient";
 
 let conn: Connection;
 let userId: String;
 const email = "middlewaretest@gmail.com";
 const pass = "test_pass_123123";
-
-const loginMutation = (e : string, p : string) => `
-mutation {
-    login(email: "${e}", password: "${p}") {
-      path
-      message
-    }
-}
-`;
-
-const test_query = `
-{
-    middleware {
-        id
-        email
-    }
-}`;
 
 beforeAll(async () => {
   conn = await createTypeORMConn();
@@ -43,28 +21,24 @@ afterAll(async () => {
 
 describe("Middleware tests:", () => {
   it("return null if no cookie", async () => {
-    console.log("without axios cookie jar");
+    const client = new TestClient(process.env.TEST_HOST as string);
 
-    const response = await axios.post(process.env.TEST_HOST as string, {query: test_query});
-    expect(response.data.data.middleware).toBeNull();
+    // call middleware without login
+    const response = await client.middleware();
+    expect(response.data.middleware).toBeNull();
   });
 
   it("get current user", async () => {
-    await axios.post(process.env.TEST_HOST as string, {
-      query: loginMutation(email, pass)
-    }, {
-      jar: cookieJar,
-      withCredentials: true
-    });
+    const client = new TestClient(process.env.TEST_HOST as string);
 
-    const response = await axios.post(process.env.TEST_HOST as string, {
-      query: test_query
-    }, {
-      jar: cookieJar,
-      withCredentials: true
-    });
+    // login
+    await client.login(email, pass);
 
-    expect(response.data.data).toEqual({
+    // call middleware
+    const response = await client.middleware();
+
+    // expect session to have the logged-in user id
+    expect(response.data).toEqual({
       middleware: {
         id: userId,
         email: email

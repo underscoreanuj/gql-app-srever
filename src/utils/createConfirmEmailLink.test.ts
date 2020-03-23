@@ -28,7 +28,6 @@ describe("Confirmation Link tests:", () => {
 
     const response = await fetch(url);
     const text = await response.text();
-    // console.log(text);
 
     expect(text).toEqual(EMAIL_CONFIRMED);
 
@@ -37,10 +36,13 @@ describe("Confirmation Link tests:", () => {
         id: userId
       }
     });
+
     expect((user as User).confirmed).toBeTruthy();
+
     const chunks = url.split("/");
     const key = chunks[chunks.length - 1];
     const value = await redis.get(key);
+
     expect(value).toBeNull();
   });
 });
