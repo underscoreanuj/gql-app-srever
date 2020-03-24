@@ -5,11 +5,12 @@ import {ResolverMap} from "../../types/gql-utils";
 import {createConfirmEmailLink} from "../../utils/createConfirmEmailLink";
 import {formatYupError} from "../../utils/formatYupError";
 import {sendEmail} from "../../utils/sendEmail";
-import {duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough} from "./errorMessages";
+import {passwordValidator} from "../../utils/yupSchemas";
+import {duplicateEmail, emailNotLongEnough, invalidEmail} from "./errorMessages";
 
 const schema = yup.object().shape({
   email: yup.string().min(7, emailNotLongEnough).max(255).email(invalidEmail),
-  password: yup.string().min(6, passwordNotLongEnough).max(255)
+  password: passwordValidator
 });
 
 export const resolvers: ResolverMap = {

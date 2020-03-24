@@ -1,6 +1,6 @@
 import * as rp from "request-promise";
 
-import {LOGIN_MUTATION, LOGOUT_MUTATION, MIDDLEWARE_QUERY, REGISTER_MUTATION} from "./Queries";
+import {FORGOT_PASSWORD_CHANGE_MUTATION, LOGIN_MUTATION, LOGOUT_MUTATION, MIDDLEWARE_QUERY, REGISTER_MUTATION} from "./Queries";
 
 export class TestClient {
   url: string;
@@ -42,6 +42,15 @@ export class TestClient {
       ...this.options,
       body: {
         query: MIDDLEWARE_QUERY
+      }
+    });
+  }
+
+  async forgotPasswordChange(new_password : string, key : string) {
+    return rp.post(this.url, {
+      ...this.options,
+      body: {
+        query: FORGOT_PASSWORD_CHANGE_MUTATION(new_password, key)
       }
     });
   }

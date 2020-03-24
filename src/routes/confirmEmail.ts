@@ -11,6 +11,8 @@ export const confirmEmail = async (req : Request, res : Response) => {
     await User.update({
       id: userId
     }, {confirmed: true});
+
+    // delete the link associated with the id once confirmed, making the link invalid
     await redis.del(id);
 
     res.send(EMAIL_CONFIRMED);

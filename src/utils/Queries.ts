@@ -24,6 +24,15 @@ export const MIDDLEWARE_QUERY = `
     }
 }`;
 
+export const FORGOT_PASSWORD_CHANGE_MUTATION = (new_password : string, key : string) => `
+mutation {
+  forgotPasswordChange(new_password: "${new_password}", key: "${key}") {
+    path
+    message
+  }
+}
+`;
+
 export const LOGOUT_MUTATION = `
 mutation {
   logout
