@@ -2,8 +2,10 @@ import "dotenv/config";
 import "reflect-metadata";
 
 import * as connectRedis from "connect-redis";
+import * as RateLimit from "express-rate-limit";
 import * as session from "express-session";
 import {GraphQLServer} from "graphql-yoga";
+import * as RedisStoreRateLimit from "rate-limit-redis";
 
 import {REDIS_SESSION_PREFIX} from "./constants";
 import {redis} from "./redis";
@@ -23,6 +25,13 @@ export const startServer = async () => {
       req: request
     })
   });
+
+  server.express.use(RateLimit({
+    store: new RedisStoreRateLimit({client: redis}),
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: "Too many requests from this IP, try again after some time" // message to deliver upon reaching limit
+  }));
 
   server.express.use(session({
     store: new RedisStore({client: redis, prefix: REDIS_SESSION_PREFIX}),
