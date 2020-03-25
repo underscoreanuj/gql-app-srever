@@ -1,33 +1,33 @@
-import * as yup from "yup";
-import * as bcrypt from "bcryptjs";
+import * as bcrypt from 'bcryptjs';
+import * as yup from 'yup';
+import { FORGOT_PASSWORD_PREFIX } from '../../constants';
+import { User } from '../../entity/User';
+import { ResolverMap } from '../../types/gql-utils';
+import { createForgotPasswordLink } from '../../utils/createForgotPasswordLink';
+import { forgotPasswordLockAccount } from '../../utils/forgotPasswordLockAccount';
+import { formatYupError } from '../../utils/formatYupError';
+import { passwordValidator } from '../../utils/yupSchemas';
+import { accountDoesntExist, expiredKeyError } from './errorMessages';
 
-import {FORGOT_PASSWORD_PREFIX} from "../../constants";
-import {User} from "../../entity/User";
-import {ResolverMap} from "../../types/gql-utils";
-import {createForgotPasswordLink} from "../../utils/createForgotPasswordLink";
-import {forgotPasswordLockAccount} from "../../utils/forgotPasswordLockAccount";
-import {passwordValidator} from "../../utils/yupSchemas";
-import {accountDoesntExist, expiredKeyError} from "./errorMessages";
-import {formatYupError} from "../../utils/formatYupError";
 
-const schema = yup.object().shape({new_password: passwordValidator});
+const schema = yup.object().shape({ new_password: passwordValidator });
 
 export const resolvers: ResolverMap = {
   Query: {
-    bye_fp: () => "bye_forgot_pass"
+    bye_fp: () => 'bye_forgot_pass'
   },
   Mutation: {
-    sendForgotPasswordEmail: async (_, {email} : GQL.ISendForgotPasswordEmailOnMutationArguments, {redis}) => {
+    sendForgotPasswordEmail: async (_, { email }: GQL.ISendForgotPasswordEmailOnMutationArguments, { redis }) => {
       const user = await User.findOne({
         where: {
-          email: email
+          email
         }
       });
 
       if (!user) {
         return [
           {
-            path: "email",
+            path: 'email',
             message: accountDoesntExist
           }
         ];
@@ -42,14 +42,14 @@ export const resolvers: ResolverMap = {
 
       return true;
     },
-    forgotPasswordChange: async (_, {new_password, key} : GQL.IForgotPasswordChangeOnMutationArguments, {redis}) => {
+    forgotPasswordChange: async (_, { new_password, key }: GQL.IForgotPasswordChangeOnMutationArguments, { redis }) => {
       const redisKey = `${FORGOT_PASSWORD_PREFIX}${key}`;
 
       const userId = await redis.get(redisKey);
       if (!userId) {
         return [
           {
-            path: "key",
+            path: 'key',
             message: expiredKeyError
           }
         ];
@@ -58,20 +58,20 @@ export const resolvers: ResolverMap = {
       try {
         await schema.validate({
           new_password
-        }, {abortEarly: false});
+        }, { abortEarly: false });
       } catch (err) {
         return formatYupError(err);
       }
 
       // hash the new password
-      const new_password_hashed = await bcrypt.hash(new_password, 10);
+      const newPasswordHashed = await bcrypt.hash(new_password, 10);
 
       // unlock account and update password
       const updatePasswordAndLockPromise = User.update({
         id: userId
       }, {
         forgotPasswordLocked: false,
-        password: new_password_hashed
+        password: newPasswordHashed
       });
 
       // delete the key from redis to invalidate the password reset link

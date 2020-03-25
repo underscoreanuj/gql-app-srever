@@ -1,12 +1,12 @@
-import * as yup from "yup";
+import * as yup from 'yup';
+import { User } from '../../entity/User';
+import { ResolverMap } from '../../types/gql-utils';
+import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
+import { formatYupError } from '../../utils/formatYupError';
+import { sendEmail } from '../../utils/sendEmail';
+import { passwordValidator } from '../../utils/yupSchemas';
+import { duplicateEmail, emailNotLongEnough, invalidEmail } from './errorMessages';
 
-import {User} from "../../entity/User";
-import {ResolverMap} from "../../types/gql-utils";
-import {createConfirmEmailLink} from "../../utils/createConfirmEmailLink";
-import {formatYupError} from "../../utils/formatYupError";
-import {sendEmail} from "../../utils/sendEmail";
-import {passwordValidator} from "../../utils/yupSchemas";
-import {duplicateEmail, emailNotLongEnough, invalidEmail} from "./errorMessages";
 
 const schema = yup.object().shape({
   email: yup.string().min(7, emailNotLongEnough).max(255).email(invalidEmail),
@@ -15,27 +15,27 @@ const schema = yup.object().shape({
 
 export const resolvers: ResolverMap = {
   Query: {
-    bye: () => "bye"
+    bye: () => 'bye'
   },
   Mutation: {
-    register: async (_, args : GQL.IRegisterOnMutationArguments, {redis, url}) => {
+    register: async (_, args: GQL.IRegisterOnMutationArguments, { redis, url }) => {
       try {
-        await schema.validate(args, {abortEarly: false});
+        await schema.validate(args, { abortEarly: false });
       } catch (err) {
         return formatYupError(err);
       }
-      const {email, password} = args;
+      const { email, password } = args;
       const userAlreadyExists = await User.findOne({
         where: {
-          email: email
+          email
         },
-        select: ["id"]
+        select: ['id']
       });
 
       if (userAlreadyExists) {
         return [
           {
-            path: "email",
+            path: 'email',
             message: duplicateEmail
           }
         ];
@@ -43,14 +43,14 @@ export const resolvers: ResolverMap = {
 
       // const hashedPassword = await bcrypt.hash(password, 10);
       // const new_user = User.create({email: email, password: hashedPassword});
-      const new_user = User.create({email: email, password: password});
+      const newUser = User.create({ email, password });
 
-      await new_user.save();
+      await newUser.save();
 
-      if (process.env.NODE_ENV !== "test") {
-        await sendEmail(email, await createConfirmEmailLink(url, new_user.id, redis));
+      if (process.env.NODE_ENV !== 'test') {
+        await sendEmail(email, await createConfirmEmailLink(url, newUser.id, redis));
       } else {
-        await createConfirmEmailLink(url, new_user.id, redis);
+        await createConfirmEmailLink(url, newUser.id, redis);
       }
 
       return null;

@@ -1,7 +1,7 @@
 {
   "defaultSeverity": "error",
   "extends": [
-    "tslint:latest", "tslint-config-prettier"
+    "tslint:recommended", "tslint:latest", "tslint-config-prettier"
   ],
   "jsRules": {},
   "rules": {
@@ -10,7 +10,24 @@
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "interface-name": false,
-    "no-submodule-imports": false
-  },
-  "rulesDirectory": []
+    "no-submodule-imports": false,
+    "max-line-length": [
+      true, 120
+    ],
+    "no-trailing-whitespace": [
+      true, "always"
+    ],
+    "prefer-const": [
+      true, {
+        "destructuring": "any"
+      }
+    ],
+    "semicolon": [
+      true, "always"
+    ],
+    "space-before-function-paren": [
+      true, "any"
+    ],
+    "quotemark": [true, "single"]
+  }
 }

@@ -13,6 +13,9 @@
     "@types/jest": "^24.0.25",
     "@types/node": "^13.1.4",
     "@types/node-fetch": "^2.5.5",
+    "@types/passport": "^1.0.3",
+    "@types/passport-github": "^1.1.5",
+    "@types/passport-github2": "^1.2.4",
     "@types/rate-limit-redis": "^1.7.0",
     "@types/request-promise": "^4.1.46",
     "@types/sparkpost": "^2.1.4",
@@ -24,7 +27,8 @@
     "ts-node": "8.5.4",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "typescript-tslint-plugin": "^0.5.5"
   },
   "dependencies": {
     "@gql2ts/from-schema": "^2.0.0-4",
@@ -44,6 +48,8 @@
     "ioredis": "^4.16.0",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.2",
+    "passport": "^0.4.1",
+    "passport-github2": "^0.1.11",
     "pg": "^7.17.0",
     "rate-limit-redis": "^1.7.0",
     "reflect-metadata": "^0.1.13",

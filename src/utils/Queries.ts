@@ -1,4 +1,4 @@
-export const REGISTER_MUTATION = (e : string, p : string) => `
+export const REGISTER_MUTATION = (e: string, p: string) => `
 mutation {
     register(email: "${e}", password: "${p}") {
       path
@@ -7,7 +7,7 @@ mutation {
 }
 `;
 
-export const LOGIN_MUTATION = (e : string, p : string) => `
+export const LOGIN_MUTATION = (e: string, p: string) => `
 mutation {
     login(email: "${e}", password: "${p}") {
       path
@@ -24,9 +24,9 @@ export const MIDDLEWARE_QUERY = `
     }
 }`;
 
-export const FORGOT_PASSWORD_CHANGE_MUTATION = (new_password : string, key : string) => `
+export const FORGOT_PASSWORD_CHANGE_MUTATION = (newPassword: string, key: string) => `
 mutation {
-  forgotPasswordChange(new_password: "${new_password}", key: "${key}") {
+  forgotPasswordChange(new_password: "${newPassword}", key: "${key}") {
     path
     message
   }

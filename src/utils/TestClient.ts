@@ -1,6 +1,6 @@
-import * as rp from "request-promise";
+import * as rp from 'request-promise';
+import { FORGOT_PASSWORD_CHANGE_MUTATION, LOGIN_MUTATION, LOGOUT_MUTATION, MIDDLEWARE_QUERY, REGISTER_MUTATION } from './Queries';
 
-import {FORGOT_PASSWORD_CHANGE_MUTATION, LOGIN_MUTATION, LOGOUT_MUTATION, MIDDLEWARE_QUERY, REGISTER_MUTATION} from "./Queries";
 
 export class TestClient {
   url: string;
@@ -10,7 +10,7 @@ export class TestClient {
     jar: any;
   };
 
-  constructor(url : string) {
+  constructor(url: string) {
     this.url = url;
     this.options = {
       json: true,
@@ -19,7 +19,7 @@ export class TestClient {
     };
   }
 
-  async register(email : string, password : string) {
+  async register(email: string, password: string) {
     return rp.post(this.url, {
       ...this.options,
       body: {
@@ -28,7 +28,7 @@ export class TestClient {
     });
   }
 
-  async login(email : string, password : string) {
+  async login(email: string, password: string) {
     return rp.post(this.url, {
       ...this.options,
       body: {
@@ -46,11 +46,11 @@ export class TestClient {
     });
   }
 
-  async forgotPasswordChange(new_password : string, key : string) {
+  async forgotPasswordChange(newPassword: string, key: string) {
     return rp.post(this.url, {
       ...this.options,
       body: {
-        query: FORGOT_PASSWORD_CHANGE_MUTATION(new_password, key)
+        query: FORGOT_PASSWORD_CHANGE_MUTATION(newPassword, key)
       }
     });
   }
