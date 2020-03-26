@@ -3,11 +3,11 @@ import * as yup from 'yup';
 import { FORGOT_PASSWORD_PREFIX } from '../../constants';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/gql-utils';
-import { createForgotPasswordLink } from '../../utils/createForgotPasswordLink';
-import { forgotPasswordLockAccount } from '../../utils/forgotPasswordLockAccount';
 import { formatYupError } from '../../utils/formatYupError';
 import { passwordValidator } from '../../utils/yupSchemas';
+import { createForgotPasswordLink } from './createForgotPasswordLink';
 import { accountDoesntExist, expiredKeyError } from './errorMessages';
+import { forgotPasswordLockAccount } from './forgotPasswordLockAccount';
 
 
 const schema = yup.object().shape({ new_password: passwordValidator });

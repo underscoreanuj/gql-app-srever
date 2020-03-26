@@ -1,10 +1,10 @@
 import * as Redis from 'ioredis';
 import fetch from 'node-fetch';
 import { Connection } from 'typeorm';
-import { User } from '../entity/User';
-import { EMAIL_CONFIRMED } from '../messages';
+import { User } from '../../entity/User';
+import { EMAIL_CONFIRMED } from '../../messages';
+import { createTypeORMConn } from '../../utils/CreateTypeORMConn';
 import { createConfirmEmailLink } from './createConfirmEmailLink';
-import { createTypeORMConn } from './CreateTypeORMConn';
 
 
 let userId = '';

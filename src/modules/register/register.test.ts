@@ -1,6 +1,6 @@
 import { Connection } from 'typeorm';
 import { User } from '../../entity/User';
-import { createTypeORMConn } from '../../utils/CreateTypeORMConn';
+import { createTestTypeORMConn } from '../../testUtils/createTestTypeORMConn';
 import { TestClient } from '../../utils/TestClient';
 import { duplicateEmail, emailNotLongEnough, invalidEmail, passwordNotLongEnough } from './errorMessages';
 
@@ -10,7 +10,7 @@ const email = 'test009@gmail.com';
 const pass = 'testing_password';
 
 beforeAll(async () => {
-  conn = await createTypeORMConn();
+  conn = await createTestTypeORMConn();
 });
 
 afterAll(async () => {

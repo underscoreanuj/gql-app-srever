@@ -1,13 +1,13 @@
 import * as Redis from 'ioredis';
 import { Connection } from 'typeorm';
 import { User } from '../../entity/User';
-import { createForgotPasswordLink } from '../../utils/createForgotPasswordLink';
 import { createTypeORMConn } from '../../utils/CreateTypeORMConn';
-import { forgotPasswordLockAccount } from '../../utils/forgotPasswordLockAccount';
 import { TestClient } from '../../utils/TestClient';
 import { forgotPasswordAccountLockedError } from '../login/errorMessages';
 import { passwordNotLongEnough } from '../register/errorMessages';
+import { createForgotPasswordLink } from './createForgotPasswordLink';
 import { expiredKeyError } from './errorMessages';
+import { forgotPasswordLockAccount } from './forgotPasswordLockAccount';
 
 
 let userId = '';

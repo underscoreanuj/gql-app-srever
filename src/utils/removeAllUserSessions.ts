@@ -1,6 +1,7 @@
 import { Redis } from 'ioredis';
 import { REDIS_SESSION_PREFIX, USER_SESSION_ID_PREFIX } from '../constants';
 
+
 export const removeAllUserSessions = async (userId: string, redis: Redis) => {
   // fetch all sessions of the user
   const sessionIds = await redis.lrange(`${USER_SESSION_ID_PREFIX}${userId}`, 0, -1);

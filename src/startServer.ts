@@ -11,12 +11,19 @@ import { REDIS_SESSION_PREFIX } from './constants';
 import { User } from './entity/User';
 import { redis } from './redis';
 import { confirmEmail } from './routes/confirmEmail';
+import { createTestTypeORMConn } from './testUtils/createTestTypeORMConn';
 import { createTypeORMConn } from './utils/CreateTypeORMConn';
 import { genSchema } from './utils/genSchema';
 
 const RedisStore = connectRedis(session);
 
 export const startServer = async () => {
+
+	// clear redis data from previous tests
+	if (process.env.NODE_ENV === 'test') {
+		await redis.flushall();
+	}
+
 	const server = new GraphQLServer({
 		schema: genSchema(),
 		context: ({ request }) => ({
@@ -54,8 +61,11 @@ export const startServer = async () => {
 			: (process.env.FRONTEND_HOST as string)
 	};
 
-	const connection = await createTypeORMConn();
+	const connection = process.env.NODE_ENV === 'test' ?
+		await createTestTypeORMConn(true) : await createTypeORMConn();
 
+
+	// github oauth integration
 	passport.use(new Strategy({
 		clientID: process.env.GITHUB_CLIENT_ID as string,
 		clientSecret: process.env.GITHUB_CLIENT_SECRET as string,

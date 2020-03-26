@@ -1,10 +1,10 @@
 import * as yup from 'yup';
 import { User } from '../../entity/User';
 import { ResolverMap } from '../../types/gql-utils';
-import { createConfirmEmailLink } from '../../utils/createConfirmEmailLink';
 import { formatYupError } from '../../utils/formatYupError';
 import { sendEmail } from '../../utils/sendEmail';
 import { passwordValidator } from '../../utils/yupSchemas';
+import { createConfirmEmailLink } from './createConfirmEmailLink';
 import { duplicateEmail, emailNotLongEnough, invalidEmail } from './errorMessages';
 
 

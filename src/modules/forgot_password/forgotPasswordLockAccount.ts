@@ -1,6 +1,7 @@
 import { Redis } from 'ioredis';
-import { User } from '../entity/User';
-import { removeAllUserSessions } from './removeAllUserSessions';
+import { User } from '../../entity/User';
+import { removeAllUserSessions } from '../../utils/removeAllUserSessions';
+
 
 export const forgotPasswordLockAccount = async (userId: string, redis: Redis) => {
   // ensure user can no longer login (LOCK account)
